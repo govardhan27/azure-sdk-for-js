@@ -33,7 +33,6 @@ steps:
 - pwsh: |
     Write-Host "###vso[task.setvariable variable=DocRepoLocation]${{ parameters.WorkingDirectory }}/doc"
   displayName: Set $(DocRepoLocation)
-  condition: and(succeeded(), ne(variables['DockerRunResult'], 'false'))
 
 - template: /eng/common/pipelines/templates/steps/sparse-checkout.yml
   parameters:
@@ -84,7 +83,8 @@ steps:
       -Language '${{parameters.Language}}' `
       -RepoId '${{ parameters.RepoId }}'
   displayName: Apply Documentation Updates
-
+  condition: and(succeeded(), ne(variables['DockerRunResult'], 'False'))
+  
 - template: /eng/common/pipelines/templates/steps/git-push-changes.yml
   parameters:
     BaseRepoBranch: $(TargetBranchName)
